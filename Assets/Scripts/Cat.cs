@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Cat : MonoBehaviour
 {
-    public float speed = 2.0f;
+    public float speed = 0.25f;
 
     private CollisionDirectionMover mover;
     private BoxCollider2D boxCollider;
@@ -14,7 +14,13 @@ public class Cat : MonoBehaviour
     {
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
-        mover = new CollisionDirectionMover(speed, transform, boxCollider, animator, collisionWith);
+        mover = new CollisionDirectionMover(
+            speed, 
+            transform,
+            boxCollider, 
+            animator, 
+            collisionWith
+        );
         moverController = new NpcMoverController(mover);
     }
 

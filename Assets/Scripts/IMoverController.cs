@@ -32,10 +32,10 @@ class PlayerMoverController: IMoverController
         // -1 >= deltaX/deltaY >= 1
         float deltaX = Input.GetAxis("Horizontal");
         float deltaY = Input.GetAxis("Vertical");
-        // float deltaX = Input.GetAxis("Horizontal");
-        // float deltaY = Input.GetAxis("Vertical");
 
-        mover.GetVectorFromDeltaCoordinate(deltaX, deltaY);
+
+        // Debug.Log("PlayerMoverController: " + new Vector2(deltaX, deltaY));
+        mover.GetVectorFromDeltaCoordinate(deltaX, deltaY, false);
     }
 }
 
@@ -67,13 +67,13 @@ class NpcMoverController : IMoverController
         {
             lastTimeNpcMoved = Time.time;
             
-            dx = UnityEngine.Random.Range(-0.08f, 0.08f);
-            dy = UnityEngine.Random.Range(-0.08f, 0.08f);
+            dx = UnityEngine.Random.Range(-1f, 1f);
+            dy = UnityEngine.Random.Range(-1f, 1f);
         }
         else
         {
-            // Debug.Log("dx/dy: " + new Vector2(dx, dy));
-             mover.GetVectorFromDeltaCoordinate(dx, dy);
+             // Debug.Log("NpcMoverController: " + new Vector2(dx, dy));
+             mover.GetVectorFromDeltaCoordinate(dx, dy, false);
         }
     }
 }

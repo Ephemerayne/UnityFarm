@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollisionDirectionMover : MonoBehaviour
+public class CollisionDirectionMover
 {
     public CollisionDirectionMover(float speed, Transform transform, BoxCollider2D boxCollider, Animator animator, string[] collisionWith)
     {
@@ -22,16 +23,23 @@ public class CollisionDirectionMover : MonoBehaviour
 
     private float speed;
 
-    public void GetVectorFromDeltaCoordinate(float deltaX,float deltaY)
-    {
+    private const float _xAxisSpeedLimit = 0.005f;
 
+    public void GetVectorFromDeltaCoordinate(float deltaX, float deltaY, bool shouldPrint = false)
+    {
         // normalized -> same diagonal movement speed
         Vector2 deltaCordinate = new Vector2(deltaX, deltaY).normalized * speed;
         Vector2 newCoordinate = deltaCordinate * Time.deltaTime;
 
         if (newCoordinate.x != 0 || newCoordinate.y != 0)
         {
-            if (Mathf.Abs(newCoordinate.x) >= 0.025f)
+            if (shouldPrint)
+            {
+                // Debug.Log("_xAxisSpeedLimit * speed: " + (_xAxisSpeedLimit));
+                Debug.Log("Mathf.Abs(newCoordinate.x) / speed: " + Mathf.Abs(newCoordinate.x) / speed);
+            }   
+            
+            if (Mathf.Abs(newCoordinate.x) / speed >= _xAxisSpeedLimit)
             {
                 // Horizontal movement has higher magnitude or equal magnitude to vertical movement
                 animator.SetFloat("X", newCoordinate.x);
@@ -90,10 +98,5 @@ public class CollisionDirectionMover : MonoBehaviour
         }
 
         _transform.Translate(new Vector2(moveX, moveY));
-    }
-
-    protected virtual void OnCollide(Collider2D collider)
-    {
-        Debug.Log("OnCollide was not implemented in " + this.name);
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 12.0f;
+    public float speed = 4.0f;
 
     private CollisionDirectionMover mover;
     private BoxCollider2D boxCollider;
