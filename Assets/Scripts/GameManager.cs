@@ -22,5 +22,7 @@ public class GameManager : MonoBehaviour
 
     // References
     public Player player;
+    public Cat cat;
+    public CursorMovement cursor;
 }
 
