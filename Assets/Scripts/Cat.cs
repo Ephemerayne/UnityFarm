@@ -1,22 +1,21 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Cat : MonoBehaviour
 {
-    public float speed = 12.0f;
+    public float speed = 2.0f;
 
     private CollisionDirectionMover mover;
     private BoxCollider2D boxCollider;
     private Animator animator;
     private IMoverController moverController;
-    private string[] collisionWith = { "Cat", "Blocking" };
-
+    private string[] collisionWith = { "Player", "Blocking" };
 
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         mover = new CollisionDirectionMover(speed, transform, boxCollider, animator, collisionWith);
-        moverController = new PlayerMoverController(mover);
+        moverController = new NpcMoverController(mover);
     }
 
     private void FixedUpdate()

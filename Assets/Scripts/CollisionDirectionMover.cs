@@ -1,28 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Mover : MonoBehaviour
+public class CollisionDirectionMover : MonoBehaviour
 {
-    const float X_SPEED = 12.0f;
-    const float Y_SPEED = 12.0f;
-
-    protected BoxCollider2D boxCollider;
-    protected RaycastHit2D hitByY;
-    protected RaycastHit2D hitByX;
-
-    public Vector2 speed = new Vector2(X_SPEED, Y_SPEED);
-    private Animator animator;
-
-    protected virtual void Awake()
+    public CollisionDirectionMover(float speed, Transform transform, BoxCollider2D boxCollider, Animator animator, string[] collisionWith)
     {
-        boxCollider = GetComponent<BoxCollider2D>();
-        animator = GetComponent<Animator>();
+        this.speed = speed;
+        this.boxCollider = boxCollider;
+        this.animator = animator;
+        _transform = transform;
+        this.collisionWith = collisionWith;
     }
 
-    private void FixedUpdate()
+    private RaycastHit2D hitByY;
+    private RaycastHit2D hitByX;
+
+    protected BoxCollider2D boxCollider;
+    private Animator animator;
+    private Transform _transform;
+    private string[] collisionWith;
+
+    private float speed;
+
+    public void GetVectorFromDeltaCoordinate(float deltaX,float deltaY)
     {
-        // -1 >= deltaX/deltaY >= 1
-        float deltaX = Input.GetAxis("Horizontal");
-        float deltaY = Input.GetAxis("Vertical");
 
         // normalized -> same diagonal movement speed
         Vector2 deltaCordinate = new Vector2(deltaX, deltaY).normalized * speed;
@@ -46,12 +47,12 @@ public abstract class Mover : MonoBehaviour
 
         float moveY = newCoordinate.y;
         hitByY = Physics2D.BoxCast(
-            transform.position,
+            _transform.position,
             boxCollider.size,
             0,
             new Vector2(0, newCoordinate.y),
             Mathf.Abs(newCoordinate.y),
-            LayerMask.GetMask("Actor", "Blocking")
+            LayerMask.GetMask(collisionWith)
         );
 
         bool isHitByY = hitByY.collider != null;
@@ -63,12 +64,12 @@ public abstract class Mover : MonoBehaviour
 
         float moveX = newCoordinate.x;
         hitByX = Physics2D.BoxCast(
-            transform.position,
+            _transform.position,
             boxCollider.size,
             0,
             new Vector2(newCoordinate.x, 0),
             Mathf.Abs(newCoordinate.x),
-            LayerMask.GetMask("Actor", "Blocking")
+            LayerMask.GetMask(collisionWith)
         );
 
         bool isHitByX = hitByX.collider != null;
@@ -88,7 +89,7 @@ public abstract class Mover : MonoBehaviour
             animator.SetBool("IsWalking", true);
         }
 
-        transform.Translate(moveX, moveY, 0);
+        _transform.Translate(new Vector2(moveX, moveY));
     }
 
     protected virtual void OnCollide(Collider2D collider)
