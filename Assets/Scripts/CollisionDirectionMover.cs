@@ -25,10 +25,10 @@ public class CollisionDirectionMover
 
     private const float _xAxisSpeedLimit = 0.005f;
 
-    public void GetVectorFromDeltaCoordinate(float deltaX, float deltaY, bool shouldPrint = false)
+    public void GetVectorFromDeltaCoordinate(Vector2 direction, bool shouldPrint = false)
     {
         // normalized -> same diagonal movement speed
-        Vector2 deltaCordinate = new Vector2(deltaX, deltaY).normalized * speed;
+        Vector2 deltaCordinate = direction.normalized * speed;
         Vector2 newCoordinate = deltaCordinate * Time.deltaTime;
 
         if (newCoordinate.x != 0 || newCoordinate.y != 0)

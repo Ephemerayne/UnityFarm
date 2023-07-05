@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 interface IMoverController
@@ -8,7 +7,7 @@ interface IMoverController
     public abstract void Move();
 }
 
-class PlayerMoverController: IMoverController
+class PlayerMoverController : IMoverController
 {
 
     // Input inputHorizontal;
@@ -22,7 +21,8 @@ class PlayerMoverController: IMoverController
         _mover = mover;
     }
 
-    public CollisionDirectionMover mover {
+    public CollisionDirectionMover mover
+    {
         get => _mover;
     }
 
@@ -33,9 +33,9 @@ class PlayerMoverController: IMoverController
         float deltaX = Input.GetAxis("Horizontal");
         float deltaY = Input.GetAxis("Vertical");
 
-
         // Debug.Log("PlayerMoverController: " + new Vector2(deltaX, deltaY));
-        mover.GetVectorFromDeltaCoordinate(deltaX, deltaY, false);
+        Vector2 direction = new Vector2(deltaX, deltaY);
+        mover.GetVectorFromDeltaCoordinate(direction, false);
     }
 }
 
@@ -43,15 +43,13 @@ class NpcMoverController : IMoverController
 {
     private CollisionDirectionMover _mover;
     private float lastTimeNpcMoved;
-    private float dx;
-    private float dy;
+    private Vector2? _movementDirection;
+    Vector2? _direction = null;
 
     public NpcMoverController(CollisionDirectionMover mover)
     {
         _mover = mover;
         lastTimeNpcMoved = Time.time;
-        dx = 0;
-        dy = 0;
     }
 
     public CollisionDirectionMover mover
@@ -59,21 +57,39 @@ class NpcMoverController : IMoverController
         get => _mover;
     }
 
+    public Vector2? movementDirection
+    {
+        set => _movementDirection = value;
+    }
 
     public void Move()
     {
-        float diff = Time.time - lastTimeNpcMoved;
-        if (diff > 3)
+
+        if (_movementDirection != null)
         {
+            _direction = _movementDirection.Value;
             lastTimeNpcMoved = Time.time;
-            
-            dx = UnityEngine.Random.Range(-1f, 1f);
-            dy = UnityEngine.Random.Range(-1f, 1f);
         }
         else
         {
-             // Debug.Log("NpcMoverController: " + new Vector2(dx, dy));
-             mover.GetVectorFromDeltaCoordinate(dx, dy, false);
+            float diff = Time.time - lastTimeNpcMoved;
+            if (diff > 3)
+            {
+                lastTimeNpcMoved = Time.time;
+                _direction = _generateRandomMovementDirection();
+            }
         }
+
+        if (_direction != null)
+        {
+            mover.GetVectorFromDeltaCoordinate((Vector2)_direction, false);
+        }
+    }
+
+    private Vector2 _generateRandomMovementDirection()
+    {
+        int xDirection = Random.Range(-1, 1);
+        int yDirection = Random.Range(-1, 1);
+        return new Vector2(xDirection, yDirection);
     }
 }
