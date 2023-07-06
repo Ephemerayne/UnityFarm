@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RouteController
+public delegate void OnAlmostReached(Vector2 almostReachedPoint);
+
+public class NpcDirectionsController
 {
-    private Transform _npcTransform;
     private Queue<Vector2> _routePoints;
 
-    public RouteController(Transform npcTransform)
+    public NpcDirectionsController()
     {
-        _npcTransform = npcTransform;
         _routePoints = new Queue<Vector2>();
     }
 
@@ -17,12 +17,14 @@ public class RouteController
         _routePoints.Enqueue(coordinate);
     }
 
-    public Vector2? CheckRoutePoints()
+    public Direction? GetMovementDirection(
+        Vector2 currentNpcPosition,
+        OnAlmostReached onAlmostReached
+    )
     {
         if (_routePoints.Count == 0) return null;
 
         Vector2 nextPoint = _routePoints.Peek();
-        Vector2 currentNpcPosition = new Vector2(_npcTransform.position.x, _npcTransform.position.y);
 
         float targetPointNpcXDiff = Mathf.Abs(nextPoint.x - currentNpcPosition.x);
         float targetPointNpcYDiff = Mathf.Abs(nextPoint.y - currentNpcPosition.y);
@@ -31,7 +33,7 @@ public class RouteController
 
         if (isAlmostReached)
         {
-            _npcTransform.position = nextPoint;
+            onAlmostReached(nextPoint);
             _routePoints.Dequeue();
             return null;
         }
@@ -42,7 +44,7 @@ public class RouteController
 
             float biggestDiff = Mathf.Max(Mathf.Abs(xDiff), Mathf.Abs(yDiff));
 
-            Vector2 movementDirection = new Vector2(xDiff / biggestDiff, yDiff / biggestDiff);
+            Direction movementDirection = Direction.Create(xDiff / biggestDiff, yDiff / biggestDiff);
             return movementDirection;
         }
     }
