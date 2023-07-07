@@ -1,50 +1,34 @@
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : MonoBehaviour
 {
     public float speed = 4.0f;
 
-    private CollisionAwareTransformCalculator mover;
-    private BoxCollider2D boxCollider;
+    private CapsuleCollider2D playerCollider;
     private Animator animator;
+    private Mover mover;
     private IMovementDirectionController _playerDirectionController;
     private string[] collisionWith = { "Cat", "Blocking" };
     private AnimationDirectionController _animationDirectionController;
-
+    protected RaycastHit2D hit;
 
     private void Awake()
     {
-        boxCollider = GetComponent<BoxCollider2D>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
         animator = GetComponent<Animator>();
-        mover = new CollisionAwareTransformCalculator(speed, boxCollider, collisionWith);
 
         _playerDirectionController = new PlayerDirectionController();
-
         _animationDirectionController = new AnimationDirectionController(animator);
+
+        mover = new Mover(transform, playerCollider, collisionWith, speed);
     }
 
     private void FixedUpdate()
     {
         Direction movementDirection = _playerDirectionController.GetMovementDirection();
 
-        Vector2 _transform = mover.GetTransformFromDirection(movementDirection, transform.position);
-        transform.Translate(_transform);
-
         _animationDirectionController.ChangeAnimationDirection(movementDirection);
+        mover.HandleMovement(new Vector3(movementDirection.x, movementDirection.y, 0));
     }
-
-
-    /*private void FixedUpdate()
-    {
-        Direction movementDirection = _npcDirectionsController.GetMovementDirection(
-            transform.position,
-            _onAlmostReachedNextRoutePoint
-        ) ?? _npcGeneratedDirectionController.GetMovementDirection();
-
-        _animationDirectionController.ChangeAnimationDirection(movementDirection);
-
-        Vector2 _transform = collisionAwareTransformCalculator.GetTransformFromDirection(movementDirection, transform.position);
-
-        transform.Translate(_transform);
-    }*/
 }

@@ -4,10 +4,10 @@ public class Cat : MonoBehaviour
 {
     public float speed = 0.25f;
 
-    private CollisionAwareTransformCalculator collisionAwareTransformCalculator;
     private NpcDirectionsController _npcDirectionsController;
-    private BoxCollider2D boxCollider;
+    private CapsuleCollider2D catCollider;
     private Animator animator;
+    private Mover mover;
     private IMovementDirectionController _npcGeneratedDirectionController;
     private string[] collisionWith = { "Player", "Blocking" };
     private OnClickChecker onClickChecker;
@@ -20,19 +20,13 @@ public class Cat : MonoBehaviour
 
     private void Awake()
     {
-        boxCollider = GetComponent<BoxCollider2D>();
+        catCollider = GetComponent<CapsuleCollider2D>();
         animator = GetComponent<Animator>();
 
-        collisionAwareTransformCalculator = new CollisionAwareTransformCalculator(
-            speed,
-            boxCollider,
-            collisionWith
-        );
-
+        mover = new Mover(transform, catCollider, collisionWith, speed);
         _npcDirectionsController = new NpcDirectionsController();
 
         _npcGeneratedDirectionController = new NpcGeneratedDirectionsController();
-
         _animationDirectionController = new AnimationDirectionController(animator);
     }
 
@@ -50,9 +44,7 @@ public class Cat : MonoBehaviour
 
         _animationDirectionController.ChangeAnimationDirection(movementDirection);
 
-        Vector2 _transform = collisionAwareTransformCalculator.GetTransformFromDirection(movementDirection, transform.position);
-
-        transform.Translate(_transform);
+        mover.HandleMovement(new Vector3(movementDirection.x, movementDirection.y, 0));
     }
 
     private void _onClick(Vector2 coordinate)
@@ -63,5 +55,15 @@ public class Cat : MonoBehaviour
     private void _onAlmostReachedNextRoutePoint(Vector2 nextPoint)
     {
         transform.position = nextPoint;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("OnCollisionEnter2D");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("OnTriggerEnter2D");
     }
 }

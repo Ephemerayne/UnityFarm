@@ -3,6 +3,8 @@ using UnityEngine;
 public class AnimationDirectionController
 {
     Animator animator;
+    float lastXDirection;
+    float lastYDirection;
 
     public AnimationDirectionController(Animator animator)
     {
@@ -15,15 +17,30 @@ public class AnimationDirectionController
 
         animator.SetBool("IsWalking", isMoving);
 
+        if (isMoving)
+        {
+            lastXDirection = direction.x;
+            lastYDirection = direction.y;
+
+
+            if (direction.x == 0)
+            {
+                animator.SetFloat("X", 0);
+            }
+        }
+
         if (isMoving && Mathf.Abs(direction.x) > 0.2f)
         {
+            lastXDirection = direction.x;
+            lastYDirection = direction.y;
+
             animator.SetFloat("X", direction.x);
             animator.SetFloat("Y", 0);
         }
         else
         {
-            animator.SetFloat("X", 0);
-            animator.SetFloat("Y", direction.y);
+            animator.SetFloat("X", lastXDirection);
+            animator.SetFloat("Y", lastYDirection);
         }
     }
 }
