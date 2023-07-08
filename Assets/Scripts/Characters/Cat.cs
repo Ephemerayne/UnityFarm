@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class Cat : MonoBehaviour
@@ -13,6 +14,9 @@ public class Cat : MonoBehaviour
     private OnClickChecker onClickChecker;
     private AnimationDirectionController _animationDirectionController;
 
+    private LineRenderer line;
+    private RouteLineController routeLineController;
+
     public Cat()
     {
         onClickChecker = new OnClickChecker();
@@ -24,15 +28,22 @@ public class Cat : MonoBehaviour
         animator = GetComponent<Animator>();
 
         mover = new Mover(transform, catCollider, collisionWith, speed);
-        _npcDirectionsController = new NpcDirectionsController();
+        _npcDirectionsController = new NpcDirectionsController(); // routeController
 
         _npcGeneratedDirectionController = new NpcGeneratedDirectionsController();
         _animationDirectionController = new AnimationDirectionController(animator);
+
+        line = GameObject.Find("RouteLine").GetComponent<LineRenderer>();
+        routeLineController = new RouteLineController(line);   
     }
 
     private void Update()
     {
         onClickChecker.checkClick(_onClick);
+
+
+        // Позиция кошки + поинты по клику (линия роута)
+        routeLineController.SetPositions(new Vector3[] { transform.position }.Concat(_npcDirectionsController._routePoints).ToArray());
     }
 
     private void FixedUpdate()

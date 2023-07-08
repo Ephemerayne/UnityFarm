@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
     public float speed = 4.0f;
 
-    private CapsuleCollider2D playerCollider;
+    private BoxCollider2D playerCollider;
     private Animator animator;
     private Mover mover;
     private IMovementDirectionController _playerDirectionController;
@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        playerCollider = GetComponent<CapsuleCollider2D>();
+        playerCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
         _playerDirectionController = new PlayerDirectionController();

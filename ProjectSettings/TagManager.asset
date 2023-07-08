@@ -16,9 +16,9 @@ TagManager:
   - Cat
   - Blocking
   - Npc
+  - 
+  - Tree
   - Player
-  - 
-  - 
   - 
   - 
   - 
@@ -53,4 +53,10 @@ TagManager:
     locked: 0
   - name: Actor
     uniqueID: 2421643925
+    locked: 0
+  - name: First Plan
+    uniqueID: 2136722541
+    locked: 0
+  - name: Decor
+    uniqueID: 1604381781
     locked: 0

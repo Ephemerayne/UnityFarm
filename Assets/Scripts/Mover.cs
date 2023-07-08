@@ -31,6 +31,14 @@ public class Mover
         {
             colliderSize = capsuleCollider.size;
         }
+        else if (_collider is EdgeCollider2D edgeCollider)
+        {
+            colliderSize = edgeCollider.bounds.size;
+        }
+        else if (_collider is PolygonCollider2D polygonCollider)
+        {
+            colliderSize = polygonCollider.bounds.size;
+        }
         else
         {
             colliderSize = Vector2.zero;

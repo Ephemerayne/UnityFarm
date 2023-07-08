@@ -5,11 +5,11 @@ public delegate void OnAlmostReached(Vector2 almostReachedPoint);
 
 public class NpcDirectionsController
 {
-    private Queue<Vector2> _routePoints;
+    public Queue<Vector3> _routePoints { get; }
 
     public NpcDirectionsController()
     {
-        _routePoints = new Queue<Vector2>();
+        _routePoints = new Queue<Vector3>();
     }
 
     public void OnGetNewCoordinate(Vector2 coordinate)
@@ -45,6 +45,7 @@ public class NpcDirectionsController
             float biggestDiff = Mathf.Max(Mathf.Abs(xDiff), Mathf.Abs(yDiff));
 
             Direction movementDirection = Direction.Create(xDiff / biggestDiff, yDiff / biggestDiff);
+
             return movementDirection;
         }
     }
